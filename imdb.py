@@ -53,7 +53,7 @@ class ImdbScraper():
                 url_list.append(link)
             next_page = f"https://www.imdb.com/search/title/?countries=in&languages=hi&start={page_items}&ref_=adv_nxt"
             print(f"Next Page Url : {next_page}")
-            if page_items <= 100:
+            if page_items <= 129591:
                 page_items += 50
                 response = requests.get(next_page)
                 get_urls(page_items, response)
@@ -135,7 +135,7 @@ if __name__ == '__main__':
         writer2 = csv.writer(data_failed_files)
         failed_headers = ['id', 'url', 'name', 'popularity', 'length', 'genres', 'pg_rating']
         writer2.writerow(failed_headers)
-        with Pool(7) as process:
+        with Pool(cpu_count()) as process:
             data_recieved = process.starmap(imdbscraper.parse_details, enumerate(url_list))
             for item in data_recieved:
                 print(len(item))
@@ -166,6 +166,7 @@ if __name__ == '__main__':
                     genres = generes_list[idx]
                     pg_rating = pg_ratings[idx]
                     writer2.writerow([idx, url, name, popularity, length, genres, pg_rating])
+                    
     data_file.close()
     data_failed_files.close()
     print(f'\n\tTotal Time Taken : {time.time()-start_time}')
